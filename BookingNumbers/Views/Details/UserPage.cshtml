@@ -1,0 +1,134 @@
+﻿@using Microsoft.AspNetCore.Http
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "User Profile"; // Title for the webpage
+}
+
+<div class="row"> <!-- Card for user details -->
+    
+    <div class="col-md">
+        <div class="card">
+            <h1 class="card-header">@Context.Session.GetString("Username")</h1> <!-- Get the username from the session -->
+            
+            <div class="card-body"> <!-- Display email and role -->
+                <h4>Email: @Model.Email</h4>
+                <h4>Role: @Context.Session.GetString("Role")</h4>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr size="2" />
+
+<div class="row pt-4"> <!-- Card to show all the projects the user is in. -->
+    <div class="col-md">
+        <h1 class="text-center">Projects</h1>
+        
+        @if (Model.Projects.Count > 0) 
+        {
+            var finalRowCardCount = Model.Projects.Count % 3; // Calc all numbers for amount of lines and cards left over.
+            var FullRows = (Model.Projects.Count - finalRowCardCount) / 3;
+
+            for (var i = 0; i < FullRows; i = i + 3)
+            {
+                <div class="card-deck pb-4"> <!-- Do a card deck with lines of 3 -->
+                    
+                    @for (var j = i; j < i + 3; j++)
+                    {
+                        <div class="card">
+                            <div class="card-header">
+                                <!-- Title is a link to the project -->
+                                <a class="h1 btn btn-link" asp-controller="Project" asp-action="Project" asp-route-id="@Model.Projects[j].ProjectId">
+                                    <h1>@Model.Projects[j].ProjectName</h1></a>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="progress"> <!-- Progress bar -->
+                                    
+                                    @{
+                                        bool overBudget = Model.Projects[j].PercentageComplete > 100; // Bool for if over budget
+                                    }
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated @(overBudget ? "bg-danger" : "bg-info")" role="progressbar" style="width: @(overBudget ? 100 : Model.Projects[j].PercentageComplete)%">@(overBudget ? "Over budget!" : "")</div>
+                                </div>
+                                <p class="card-title">Description</p> 
+                                <!-- Project description. -->
+                                <p class="card-text">@Model.Projects[j].Description</p>
+                            </div>
+
+                            <div class="card-footer">
+                                <p>Latest Booking: @Model.Projects[j].LastActivity</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+
+            if (finalRowCardCount > 0)
+            {
+
+                <div class="card-deck"> <!-- Card deck for remaining projects. -->
+                    @for(var i = 0; i < finalRowCardCount; i++)
+                    {
+                        <div class="card"> <!-- Card per project -->
+                            <div class="card-header">
+                                <a class="h1 btn btn-link" asp-controller="Project" asp-action="Project" asp-route-id="@Model.Projects[(Model.Projects.Count - finalRowCardCount) + i].ProjectId"><h1>@Model.Projects[(Model.Projects.Count - finalRowCardCount) + i].ProjectName</h1></a>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="progress">
+                                    <!-- Progress bar -->
+                                    @{
+                                        bool overBudget = Model.Projects[(Model.Projects.Count - finalRowCardCount) + i].PercentageComplete > 100;
+                                    }
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated @(overBudget ? "bg-danger" : "bg-info")" role="progressbar" style="width: @(overBudget ? 100 : Model.Projects[(Model.Projects.Count - finalRowCardCount) + i].PercentageComplete)%">@(overBudget ? "Over budget!" : "")</div>
+                                </div>
+                                <p class="card-title">Description</p>
+                                <p class="card-text">@Model.Projects[(Model.Projects.Count - finalRowCardCount) + i].Description</p>
+                            </div>
+
+                            <div class="card-footer">
+                                <p>Latest Booking: @Model.Projects[(Model.Projects.Count - finalRowCardCount) + i].LastActivity</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            
+        }
+        else
+        {
+            <h3 class="text-center">User is not a part of any projects.</h3>
+        }
+
+    </div>
+</div>
+
+<hr size="2" />
+
+<div class="row pt-4"> <!-- Row for latest bookings. -->
+    <div class="col-md">
+        <div class="card">
+            <h1 class="card-header">Latest Bookings</h1>
+            
+            <div class="card-body">
+                @if (Model.Bookings.Count > 0)
+                {
+                    <ul class="list-group list-group-flush"> <!-- Display all the bookings in a flush list group -->
+                        @{
+                            foreach (var booking in Model.Bookings)
+                            {
+                                <li class="list-group-item">Booked @booking.HoursBooked hours and @booking.MinutesBooked minutes to @booking.ProjectBookedTo on @booking.DateBooked.ToShortDateString()</li>
+                            }
+                        }
+                    </ul>
+                            }
+                else
+                {
+                    <p class="card-title">This user has not booked any hours.</p> <!-- If the user doesn't have any bookings. -->
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

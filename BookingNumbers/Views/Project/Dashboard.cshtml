@@ -1,0 +1,64 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+}
+@model DashboardViewModel
+
+<div class="row">
+    <div class="col-md">
+        <!-- Formatting for first column-->
+        <div class="card">
+            <h1 class="card-header">Project User Details/Info</h1>
+            <div class="card-body">
+                <!-- Table for list of projects -->
+                <div class="table-wrapper-scroll-y">
+                    <table class="table table-md table-hover scrollbar table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <!-- Row of table headings -->
+                                <th>Number</th>
+                                <th>Description</th>
+                                <th>Go To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Display each projects booking number and description from model -->
+                            @{
+                                foreach (var project in Model.UsersProjects)
+                                {
+                                    <tr>
+                                        <td>
+                                            @project.BookingNumber
+                                        </td>
+                                        <td>
+                                            @project.ProjectDescription
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-info btn-md" asp-controller="Project" asp-action="Project" asp-route-id="@project.ProjectId">
+                                                Go To <!-- Allow navigation to project -->
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md">
+        <!-- Formatting and content for right-side card -->
+        <div class="card">
+            <h1 class="card-header">Requests</h1>
+            <div class="card-body">
+                <p class="card-text">To request to be added to a project, click below</p>
+                <!-- Button for navigating to request form page -->
+                <a class="btn btn-success form-control w-50 float-right" asp-controller="Requests" asp-action="CreateRequest">Go To</a>
+            </div>
+        </div>
+    </div>
+</div>

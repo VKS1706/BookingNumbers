@@ -1,0 +1,218 @@
+﻿@model ManageUsersViewModel
+@{
+    ViewBag.Title = "Manage Users";
+
+}
+
+<!-- Formatting -->
+<div class="row">
+    <div class="col-md pt-2">
+        <!-- Heading -->
+        <h1 class="text-center text-info">All Users</h1>
+        <div class="table-wrapper-scroll-y scrollbar">
+            <table class="table table-sm">
+                <thead class="thead-dark">
+                    <tr>
+                        <!-- Table headings -->
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var user in Model.AllUsers)// loop for amount of users that there are in the model; iterate through every user
+                    {
+                        <tr>
+                            <!-- Display each user's username, email and role. -->
+                            <td>@user.Username</td>
+                            <td>@(user.Email ?? "This user has not given an email.")</td> <!-- If no email provided, tell user that an email has not been given -->
+                            <td>@user.Role</td>
+                            <!-- Allow user to be selected for management -->
+                            <td><a asp-controller="UserManagement" asp-action="ManageUsers" asp-route-id="@user.MinutesBooked" class="btn btn-primary">Select User</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <!-- Seperate column formatting -->
+    <div class="col-md pt-2">
+
+        <h1 class="text-center text-info">Actions</h1>
+
+        <!-- Automate collapsable sections -->
+        <div class="accordion" id="actionAccordian">
+
+            <div class="card">
+                <div class="card-header mb-0">
+                    <!-- Button to open project section -->
+                    <button class="btn btn-outline-info w-100 h-100" type="button" data-toggle="collapse" data-target="#AddToProjectCollapse">
+                        <h3 class="text-center">Add User to Project</h3>
+                    </button>
+                </div>
+
+                <!-- add to project section -->
+                <div class="collapse show" data-parent="#actionAccordian" id="AddToProjectCollapse">
+                    <div class="card-body">
+                        <div class="form-group">
+                            <!-- Form for selecting project to add user to -->
+                            <form asp-controller="UserManagement" asp-action="AddToProj" asp-route-id="@(Model.SelectedUser != null ? @Model.SelectedUser.User.UserId : 1)">
+                                <label>Select Project</label>
+                                <!-- Get list of selectable project names from model -->
+                                <select class="form-control" asp-for="SelectedProjectName">
+                                    @foreach (var projName in Model.ProjectNames)
+                                    {
+                                        <option>@projName</option>
+                                    }
+                                </select>
+
+
+                                <!-- Button for confirming selection, only if a user has been selected -->
+                                <button class="btn btn-info @(Model.SelectedUser != null ? "" : "disabled") form-control w-50 pt-1" @(Model.SelectedUser != null ? "" : "disabled")>Add User</button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header mb-0">
+                    <!-- Button to open reset password section -->
+                    <button class="btn btn-outline-warning w-100 h-100" type="button" data-toggle="collapse" data-target="#ResetPasswordCollapse">
+                        <h3 class="text-center">Reset Password</h3>
+                    </button>
+                </div>
+
+                <!-- reset password section -->
+                <div class="collapse" data-parent="#actionAccordian" id="ResetPasswordCollapse">
+                    <div class="card-body">
+                        <!-- form for changing password -->
+                        <form asp-controller="UserManagement" asp-action="ChangePassword" asp-route-id="@(Model.SelectedUser != null ? @Model.SelectedUser.User.UserId : 1)">
+                            <div class="form-group">
+                                <label>New Password</label>
+                                <!-- Input for new password to prepare for submitting to the database -->
+                                <input class="form-control" type="password" placeholder="New Password..." asp-for="NewPassword" />
+                            </div>
+                            <!-- Button for confirming selection, only if a user has been selected -->
+                            <button class="btn btn-warning pt-1 w-50 @(Model.SelectedUser != null ? "" : "disabled")" @(Model.SelectedUser != null ? "" : "disabled")>Change Password</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header mb-0">
+                    <!-- Button to open change user role section -->
+                    <button class="btn btn-outline-warning w-100 h-100" type="button" data-toggle="collapse" data-target="#ChangeRoleCollapse">
+                        <h3 class="text-center">Change User Role</h3>
+                    </button>
+                </div>
+
+                <!--Change user role section -->
+                <div class="collapse" data-parent="#actionAccordian" id="ChangeRoleCollapse">
+                    <div class="card-body">
+                        <!-- Form for changing user role -->
+                        <form asp-controller="UserManagement" asp-action="ChangeRole" asp-route-id="@(Model.SelectedUser != null ? @Model.SelectedUser.User.UserId : 1)">
+                            <label>Select New Role</label>
+                            <!-- Get each role from model and allow user to pick one -->
+                            <select class="form-control" asp-for="NewRole">
+                                @foreach (var role in Model.AllRoles)
+                                {
+                                    <option>@role</option>
+                                }
+                            </select>
+
+
+                            <!-- Button for confirming selection, only if a user is selected-->
+                            <button class="btn btn-warning @(Model.SelectedUser != null ? "" : "disabled") form-control w-50 pt-1" @(Model.SelectedUser != null ? "" : "disabled")>Change Role</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header mb-0">
+                    <!-- Button to open delete user section -->
+                    <button class="btn btn-outline-danger w-100 h-100" type="button" data-toggle="collapse" data-target="#DeleteUserCollapse">
+                        <h3 class="text-center">Delete User</h3>
+                    </button>
+                </div>
+
+                <!-- delete user section -->
+                <div class="collapse" data-parent="#actionAccordian" id="DeleteUserCollapse">
+                    <div class="card-body">
+                        <!-- Form for deleting a user -->
+                        <form asp-controller="UserManagement" asp-action="DeleteUser" asp-route-id="@(Model.SelectedUser != null ? @Model.SelectedUser.User.UserId : 1)">
+                            <!-- Button for deleting user, if a user is selected -->
+                            <button class="btn btn-danger @(Model.SelectedUser != null ? "" : "disabled") form-control" @(Model.SelectedUser != null ? "" : "disabled")>Confirm Delete User</button>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+</div>
+
+<!-- If user hasn been selected -->
+@if (Model.SelectedUser != null)
+{
+    <hr size="2" />
+    <!-- Formatting -->
+    <div class="row pt-4">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="card">
+                <!-- Get username from model -->
+                <h1 class="card-header">@Model.SelectedUser.User.UserName</h1>
+
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <!-- Display email of user from model -->
+                        <p class="form-control border-light">@Model.SelectedUser.User.Email</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Role</label>
+                        <!-- Display role of user from model -->
+                        <p class="form-control border-light">@Model.SelectedUser.Role</p>
+                    </div>
+
+                    <hr size="2" />
+                    <!-- If user is a member of at least 1 project -->
+                    @if (Model.SelectedUser.MemberOfProjects.Count > 0)
+                    {
+                        <h3 class="text-center">Projects</h3>
+                        <ul class="list-group">
+                            <!-- Display a list of projects the user is a part of according to the model -->
+                            @foreach (var project in Model.SelectedUser.MemberOfProjects)
+                            {
+                                <li class="list-group-item">@project</li>
+                            }
+                        </ul>
+
+
+                    }
+                    // If the selected user is not a part of any projects
+                    else
+                    {
+                        <!-- Display to the user that the selected user is not a part of any projects -->
+                        <h3 class="text-center">User is not a member of any projects.</h3>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,18 @@
+﻿body {
+    background-color: #FFFAF0;
+}
+
+.body-content {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+.scrollbar {
+    position: relative;
+    max-height: 400px;
+    overflow: auto;
+}
+.table-wrapper-scroll-y {
+    display: block;
+}
+

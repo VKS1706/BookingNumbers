@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "CreateProject";
+}
+@model CreateProjectViewModel
+
+<div class="row">
+    <!-- Empty column for formatting -->
+    <div class="col-md-3">
+
+    </div>
+    <!-- Formatting Page Content -->
+    <div class="col-md-6">
+        <div class="card border border-dark">
+            <!-- Create Project Header -->
+            <h1 class="card-header text-center">Create Project</h1>
+            <div class="card-body">
+                <!-- Form for calling various methods to prepare data for submission -->
+                <form asp-controller="Project" asp-action="CreateProject" method="post">
+                    <div class="form-group">
+                        <label asp-for="ProjectName">Project Name:</label>
+                        <!-- Project Name Data  -->
+                        <input asp-for="ProjectName" class="form-control form-control-lg" placeholder="Name" required></input>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ProjectNumber">Project Number:</label>
+                        <!-- Project Number Data -->
+                        <input asp-for="ProjectNumber" class="form-control form-control-lg" placeholder="Number" type="number" min="1000" max="9999" step="1" required></input>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="MaxHours">Maximum Number of Hours:</label>
+                        <!-- Max Number of Hours Data -->
+                        <input asp-for="MaxHours" class="form-control form-control-lg" placeholder="Hours" type="number" min="0" step="1" required></input>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ProjectDesc">Description:</label>
+                        <!-- Program Description Data -->
+                        <textarea asp-for="ProjectDesc" class="form-control" rows="4" cols="50" required></textarea>
+                    </div>
+                    <!-- Button to submit the data in order to create a new project -->
+                    <button class="btn btn-primary" style="width:100%" type="submit"><h2>Create</h2></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

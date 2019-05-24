@@ -1,0 +1,156 @@
+﻿@using Microsoft.AspNetCore.Http
+@model ViewProjectViewModel
+@{
+    // Setting up progress bar & Calculations
+    var current = (double)Model.Project.CurrentUsedMinutes;
+    var max = (double)Model.Project.MaximumMinutes;
+    var percentage = (int)((current / max) * 100);
+
+    
+}
+
+
+<div class="row pb-4">
+    <div class="col-md">
+        <!-- Formatting Card -->
+        <div class="card">
+            <div class="card-header">
+                <div class="row">
+                    <!-- Get project name and booking number from model -->
+                    <div class="col-sm-10"><h1>@Model.Project.ProjectName</h1></div>
+                    <div class="col-sm"><p class="card-text">#@Model.Project.BookingNumber</p></div>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <!-- Get project description from model -->
+                <p class="card-title">Description</p>
+                <p class="card-body">@Model.Project.ProjectDescription</p>
+            </div>
+
+            <div class="card-footer">
+                <div>
+                    <!-- Show percentage of allocated time booked -->
+                    <label>@percentage% of allocated time is booked.</label>
+                </div>
+
+                <div class="progress">
+                    <!-- Display Progress Bar -->
+                    <div class="progress-bar progress-bar-striped progress-bar-animated @(percentage > 100 ? "bg-danger" : "bg-info")" style="width: @(percentage > 100 ? 100 : percentage)%">
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+    </div>
+    <div class="col-md">
+
+        <div class="card w-75 mx-auto">
+            <!-- Card Heading -->
+            <h1 class="card-header">Book Hours</h1>
+
+            <div class="card-body">
+                <!-- If Project is not locked, allow data to be submitted -->
+
+                @if (!Model.Project.Locked)
+                {
+                    <form method="post" asp-controller="Project" asp-action="BookHours" asp-route-id="@Model.Project.ProjectId">
+
+                        <div class="form-group">
+                            <label asp-for="HoursBooked"></label>
+                            <!-- Prepare Hours Booked Data -->
+                            <input type="number" asp-for="HoursBooked" class="form-control" step="1" min="0" max="13" placeholder="0" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="MinutesBooked"></label>
+                            <!-- Prepare Minute Booked Data -->
+                            <input type="number" asp-for="MinutesBooked" class="form-control" step="1" min="0" max="59" placeholder="0" />
+                        </div>
+
+                        <!-- Submission button for above form in order to add hours to a project -->
+                        <input type="submit" class="btn btn-success form-control w-50 float-right" value="Book Hours" />
+
+                    </form>
+
+                }
+                else
+                {
+                    <!-- If project is overbooked, display below text to alert the user they cannot add any more hours -->
+                    <p class="card-text">Project is currently locked. You cannot add anymore hours to it. Please contact an admin to resolve this issue.</p>
+                }
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<hr size="2" />
+
+<!-- User table -->
+<div class="row">
+    <div class="col-md">
+        <div class="card">
+            <!-- Heading -->
+            <h2 class="card-header">List of Project Members</h2>
+
+            <!-- Table of users -->
+            <div class="table-wrapper-scroll-y scrollbar">
+                <table class="table table-borderless table-hover table-sm table-striped">
+                    <thead class="thead-dark">
+                        <!-- Table headings of user details -->
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <!-- If admin is logged in, add heading for minutes booked by each user -->
+                            @if (Context.Session.GetString("Role") == "Admin")
+                            {
+                                <th>Total Minutes Booked By User</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Display list of project members -->
+                        @{
+                            foreach (var projectUser in Model.ProjectUsers)
+                            {
+
+                                var amountOfMinsFormatted = 0;
+                                var amountOfHours = 0;
+
+                                if (Context.Session.GetString("Role") == "Admin") // If admin, show hours and minutes booked
+                                {
+                                    var amountOfMins = projectUser.MinutesBooked;
+
+
+                                    amountOfMinsFormatted = amountOfMins % 60;
+                                    amountOfHours = (amountOfMins - amountOfMinsFormatted) / 60;
+
+                                }
+
+                                <!-- Table Headings -->
+                                <tr>
+                                    <td>@projectUser.Username</td>
+                                    <td>@projectUser.Email</td>
+                                    <td>@projectUser.Role</td>
+
+                                    @if (Context.Session.GetString("Role") == "Admin")
+                                    {
+                                        <td>@amountOfHours Hours  @amountOfMinsFormatted Minutes</td>// If admin, show heading for time booked
+                                    }
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>

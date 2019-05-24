@@ -1,0 +1,81 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = "_BlankLayout";
+    ViewData["Title"] = "BevTec Login";
+}
+@model LoginViewModel
+
+
+<body style="background-color: #FFFAF0">
+    <!-- Setting up formatting -->
+    <div class="container">
+        <div class="row" style="padding-top: 5%">
+            <div class="col-md">
+                <div class="card bg-light border-dark border">
+
+                    <!-- Title of left card -->
+                    <div class="card-head text-center">
+                        <h3>Welcome to BookingNumbers</h3>
+                        <small>By BevTec</small>
+                    </div>
+                    <!-- Contents of left card -->
+                    <div class="card-body">
+                        <form asp-controller="Login" asp-action="Index" method="post"> <!-- Form for sending username/password data to database -->
+                            <div class="form-group">
+                                <label for="LoginUsername">Username</label>
+                                <input asp-for="UserName" class="form-control form-control-lg" placeholder="Username" id="LoginUsername" required></input>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="LoginPassword">Password</label>
+                                <input asp-for="Password" class="form-control form-control-lg" placeholder="Password" id="LoginPassword" type="password" required></input>
+                            </div>
+
+                            <button class="btn btn-primary" style="width:100%" type="submit"><h2>Login</h2></button> <!-- Submit form -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Title and formatting of right card -->
+            <div class="col-md-7">
+                <div class="card border-danger" style="width: 100%">
+                    <h1 class="card-header text-center">Broadcasts</h1>
+
+                    <!-- Red text - Contents of right card -->
+                    <div class="card-body text-danger">
+                        
+                        <ul class="list-group list-group-flush">
+                            <!-- C# code for getting broadcasts and displaying them -->
+                            @if (Model.LoginBroadcasts.Count > 0)
+                            {
+                                foreach (var broadcast in Model.LoginBroadcasts) // Getting broadcasts from model
+                                 {
+                                     <li class="list-group-item">
+                                         <h5 class="card-title">@broadcast.Title</h5>
+                                         <p class="card-text">@broadcast.Body</p>
+                                     </li>
+                                 }
+                            }
+                            else
+                            {
+                                <!-- In the event of there being no broadcasts -->
+                                <li class="list-group-item">
+                                    <h5 class="card-title">No broadcasts</h5>
+                                    <p class="card-text">Everything is working nominally.</p>
+                                </li>
+                            }
+                        </ul>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>

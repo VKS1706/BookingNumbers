@@ -1,0 +1,85 @@
+﻿@model BroadcastListViewModel
+@{
+    ViewData["Title"] = "List of Broadcasts";
+}
+
+<div class="row">
+    <!-- Setting up formatting -->
+    <div class="col-md-12">
+        <div class="card">
+            
+            <!-- Heading formatting and content -->
+            <div class="card-header">   
+                
+                <h1 class="text-left d-inline">List of Broadcasts</h1>
+                
+                <a asp-controller="BroadcastSystem" asp-action="Publish" class="btn btn-success d-inline float-right h-100" >Publish Broadcast</a> <!-- Navigation functionality to publish broadcast page -->
+
+            </div>
+            
+            <!-- Table of Broadcasts -->
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    
+                    @if (Model.BroadcastsList.Count > 0) // If there are any broadcasts
+                    {
+                        <!-- Column heading contents (First row) -->
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-1">
+                                    <p class="text-center font-weight-bold">ID</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <p class="text-center font-weight-bold">Title</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <p class="text-center font-weight-bold">Body</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <p class="text-center font-weight-bold">Author</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <p class="text-center font-weight-bold">Delete</p>
+                                </div>
+                            </div>
+                        </li>
+
+                        foreach (var broadcast in Model.BroadcastsList) // For every broadcast, fetched from the model
+                        {
+                            <!-- Create a list of each item with contents taken from broadcast model -->
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col-md-1">
+                                        <p class="text-center">@broadcast.Broadcast.BroadcastId</p>
+                                    </div>
+                                    <div class="col-md-3 text-center">
+                                        <p>@broadcast.Broadcast.Title</p>
+                                    </div>
+                                    <div class="col-md-4 text-center">
+                                        <p>@broadcast.Broadcast.Body</p>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <p>@broadcast.Username</p>
+                                    </div>
+                                    <div class="col-md-2 text-center">
+                                        <!-- Calls methods for deleting broadcasts functionality  -->
+                                        <a asp-controller="BroadcastSystem" asp-action="DeleteBroadcast" asp-route-id="@broadcast.Broadcast.BroadcastId"><button class="btn btn-danger" name="delete" value="@broadcast.Broadcast.BroadcastId">Delete</button></a>
+
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    }
+                    else // When no broadcasts exist
+                    {
+                        <!-- Display to user that there are no broadcasts -->
+                        <li class="list-group-item"> 
+                            <h2 class="text-center">No Broadcasts to show.</h2>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

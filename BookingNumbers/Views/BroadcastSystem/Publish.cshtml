@@ -1,0 +1,55 @@
+﻿@model PublishBroadcastViewModel
+@{
+    ViewData["Title"] = "Publish / Edit Broadcast";
+}
+
+<!-- Set up formatting -->
+<body style="background-color: #FFFAF0">
+    <div class="container">
+        <div class="row">
+            <div class="col-md">
+                <div class="card bg-light border border-dark">
+                    <h1 class="card-header">Publish Message</h1> <!-- Heading -->
+
+                    <div class="card-body">
+                        <form method="post" asp-controller="BroadcastSystem" asp-action="AddBroadcast">
+                            <!-- Content to be inputted for the new broadcast -->
+                            <div class="row row-pad">
+                                <div class="col-md-5">
+                                    <!-- Call method to prepare broadcast title for submission -->
+                                    <input asp-for="Title" class="form-control form-control-lg" placeholder="Message Title" required />
+                                </div>
+                            </div>
+
+                            <div class="row row-pad">
+                                <div class="col-md-12">
+                                    <!-- Call method to prepare broadcast message for submission -->
+                                    <textarea asp-for="Body" class="form-control form-control-lg" rows="10" placeholder="Message Body" required></textarea>
+                                </div>
+                            </div>
+                            <hr size=2>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <!-- Call method to prepare broadcast ID to replace when published -->
+                                    <label class="label" for="idBox">ID of message to replace (Optional)</label>
+                                    <input asp-for="UpdateId" class="form-control form-control-lg w-50" placeholder="ID" id="idBox" min="1"></input>
+                                </div>
+                                <div class="col-md-2">
+
+                                </div>
+                                <!-- Button to submit above form data to publish broadcast -->
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-success w-100 h-100 font-weight-bold align-middle">Publish</button>
+                                </div>
+                                <!--  Button to go back -->
+                                <div class="col-md-3">
+                                    <a asp-controller="BroadcastSystem" asp-action="List"><button class="btn btn-danger w-100 h-100 font-weight-bold align-middle">Back</button></a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

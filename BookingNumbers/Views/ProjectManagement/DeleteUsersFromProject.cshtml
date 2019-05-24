@@ -1,0 +1,100 @@
+﻿
+@{
+    ViewData["Title"] = "Delete Users";
+}
+@using Microsoft.AspNetCore.Http
+@model DeleteUserFromProjectViewModel
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card justify-content-center">
+            <!-- This is the card where you can select the project to delete users from -->
+            <h1 class="card-header">Select Project</h1>
+            <div class="card-body">
+                
+                <!-- Create the form that allows the user to input a project to select -->
+                <form method="post" asp-controller="ProjectManagement">
+                    <div class="form-group">
+                        <label>Current Project</label>
+                        <!-- Drop down down with all project names in, will submit the form on change of option -->
+                        <select required class="form-control" onchange="this.form.submit()" asp-for="SelectedProject">
+                            
+                            <!-- Only runs on the first go when nothing is selected. -->
+                            @if (string.IsNullOrEmpty(Model.SelectedProject))
+                            {
+                                <option value="" selected disabled hidden>Please select project...</option>
+                            }
+
+                            <!-- Display all the options -->
+                            @foreach (var projectName in Model.AllProjectNames)
+                            {
+                                if (Model.SelectedProject == projectName)
+                                {
+                                    <!-- If it's the selected option, give it the selected attribute -->
+                                    <option selected>
+                                        @projectName
+                                    </option>
+                                }
+                                else
+                                {
+                                    <option>
+                                        @projectName
+                                    </option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+    
+    <!-- The table of users -->
+    <div class="col-md-9">
+        
+        <!-- Only draw something when there is a selected project -->
+        
+        @if (string.IsNullOrEmpty(Model.SelectedProject) && !string.IsNullOrEmpty(Context.Session.GetString("SelectedProject")))
+        {
+            Model.SelectedProject = Context.Session.GetString("SelectedProject");
+        }
+
+        @if (!string.IsNullOrEmpty(Model.SelectedProject))
+        {
+            <table class="table table-sm pl-1">
+                <!-- Give the table a header -->
+                <thead class="thead-dark">
+                <tr class="text-center">
+                    <th>Username</th>
+                    <th>Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- If there are no users, say so -->
+                @if (Model.UsersInProject.Count < 1)
+                {
+                    <tr>
+                        <td class="text-center">There are no users in this project.</td>
+                    </tr>
+                }
+                else
+                {
+                    // If there are users in the project, display them all
+                    foreach (var user in Model.UsersInProject)
+                    {
+                        <tr>
+                            <td class="text-center">@user.UserName</td>
+                            <td class="text-center">
+                                <a class="btn btn-danger w-25" asp-controller="ProjectManagement" asp-action="DeleteUser" asp-route-id="@user.UserId">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+

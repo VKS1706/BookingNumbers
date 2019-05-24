@@ -1,0 +1,41 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+@model CreateRequestViewModel
+<!-- Formatting -->
+<div class="row">
+    <div class="col-md">
+        <div class="card">
+            <!-- Card Header -->
+            <h1 class="card-header">Request Form</h1>
+            <div class="card-body">
+                <!-- Form for creating requests -->
+                <form method="post" asp-controller="Requests" asp-action="CreateRequest">
+
+                    <!-- Inputs on this page sent into viewmodel by SelectedType -->
+                    <select class="custom-select form-control" asp-for="SelectedType">
+
+                        <!-- Default Option -->
+                        <option selected>Choose Request Type</option>
+                        @{// List additional options from database via model
+                            foreach (var type in Model.RequestType)
+                            {
+                                <option>
+                                    @type
+                                </option>
+                            }
+                        }
+                    </select>
+                    <div class="form-group">
+                        <label asp-for="Reason">Please state the reason for the request</label>
+                        <!-- Calls method for submitting input data for the reasoning behind the selected request -->
+                        <textarea class="form-control" rows="4" cols="50" asp-for="Reason"></textarea>
+                    </div>
+                    <button class="btn btn-primary" type="submit">Submit</button> <!-- Button used to allow the user to submit the form data above to the database -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

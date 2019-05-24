@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "Manage Projects";
+}
+@model BookingNumbers.Tools.ManageProjectViewModel
+
+<!-- Page Formatting  -->
+<div class="row">
+    <div class="col-md">
+        <!-- Table Formatting -->
+        <table class="table table-sm">
+            <caption>All current projects.</caption>
+            <thead class="thead-dark">
+                <tr>
+                    <!-- Top row for table headings -->
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Modify</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <!-- For every project within the model, display name and description -->
+                @foreach (var proj in Model.AllProjects)
+                {
+                <tr>
+                    <td>@proj.ProjectName</td> <!-- Project Name from model -->
+                    <td>@proj.ProjectDescription</td><!-- Project Description from model -->
+                    <td>
+                        <!-- Button for navigating to modify projects page -->
+                        <a class="btn btn-warning text-center" asp-controller="ProjectManagement" asp-action="ModifyProject" asp-route-id="@proj.ProjectId">Modify</a>
+                    </td>
+                    <td>
+                        <!-- Button to call method to delete the project -->
+                        <a class="btn btn-danger" asp-controller="ProjectManagement" asp-action="DeleteProject" asp-route-id="@proj.ProjectId">Delete</a>
+                    </td>
+                </tr>
+                }
+
+            </tbody>
+
+
+        </table>
+
+    </div>
+</div>
+
